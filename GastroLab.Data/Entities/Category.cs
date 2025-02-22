@@ -1,0 +1,11 @@
+﻿namespace GastroLab.Data.Entities
+{
+    public class Category : BaseEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+
+        public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    }
+}
