@@ -21,10 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\GastroLab.Application\GastroLab.Application.csproj" />
     <ProjectReference Include="..\GastroLab.Data\GastroLab.Data.csproj" />
   </ItemGroup>
 

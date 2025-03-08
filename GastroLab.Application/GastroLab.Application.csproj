@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GastroLab.Data\GastroLab.Data.csproj" />
+    <ProjectReference Include="..\GastroLab.Models\GastroLab.Models.csproj" />
+  </ItemGroup>
+
 </Project>
