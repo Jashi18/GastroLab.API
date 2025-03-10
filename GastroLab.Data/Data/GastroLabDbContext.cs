@@ -1,9 +1,10 @@
 ﻿using GastroLab.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GastroLab.Data.Data
 {
-    public class GastroLabDbContext : DbContext
+    public class GastroLabDbContext : IdentityDbContext<ApplicationUser>
     {
         public GastroLabDbContext(DbContextOptions<GastroLabDbContext> options): base(options){ }
 

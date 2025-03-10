@@ -9,8 +9,8 @@ namespace GastroLab.Application.Interfaces
         IEnumerable<RecipeListModel> GetRecipesByCountry(int countryId);
         IEnumerable<RecipeListModel> GetRecipesByAuthor(string authorId);
         RecipeDetailModel GetRecipeById(int id);
-        int CreateRecipe(RecipeCreateModel recipeModel);
-        int UpdateRecipe(RecipeUpdateModel recipeModel);
-        bool DeleteRecipe(int id);
+        int CreateRecipe(RecipeCreateModel recipeModel, string userId);
+        int UpdateRecipe(RecipeUpdateModel recipeModel, string userId);
+        bool DeleteRecipe(int id, string userId);
     }
 }

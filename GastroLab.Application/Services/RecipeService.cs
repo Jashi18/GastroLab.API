@@ -135,7 +135,7 @@ namespace GastroLab.Application.Services
 
             return recipe ?? throw new KeyNotFoundException($"Recipe with ID {id} not found");
         }
-        public int CreateRecipe(RecipeCreateModel recipeModel)
+        public int CreateRecipe(RecipeCreateModel recipeModel, string userId)
         {
             var country = _dbContext.Countries
                 .FirstOrDefault(c => c.DeleteDate == null && c.Id == recipeModel.CountryId);
@@ -157,7 +157,7 @@ namespace GastroLab.Application.Services
                 CookingTime = recipeModel.CookingTime,
                 CountryId = recipeModel.CountryId,
                 ImageUrl = recipeModel.ImageUrl,
-                AuthorId = recipeModel.AuthorId,
+                AuthorId = userId,
                 CreateDate = DateTime.UtcNow
             };
 
@@ -181,7 +181,7 @@ namespace GastroLab.Application.Services
 
             return recipe.Id;
         }
-        public int UpdateRecipe(RecipeUpdateModel recipeModel)
+        public int UpdateRecipe(RecipeUpdateModel recipeModel, string userId)
         {
             var recipe = _dbContext.Recipes
                 .Include(r => r.Ingredients.Where(i => i.DeleteDate == null))
@@ -189,6 +189,9 @@ namespace GastroLab.Application.Services
                 .FirstOrDefault(r => r.DeleteDate == null && r.Id == recipeModel.Id);
 
             if (recipe == null)
+                throw new KeyNotFoundException($"Recipe with ID {recipeModel.Id} not found");
+
+            if (recipe.AuthorId != userId)
                 throw new KeyNotFoundException($"Recipe with ID {recipeModel.Id} not found");
 
             var country = _dbContext.Countries
@@ -261,13 +264,16 @@ namespace GastroLab.Application.Services
 
             return recipe.Id;
         }
-        public bool DeleteRecipe(int id)
+        public bool DeleteRecipe(int id, string userId)
         {
             var recipe = _dbContext.Recipes
                 .FirstOrDefault(r => r.DeleteDate == null && r.Id == id);
 
             if (recipe == null)
                 return false;
+
+            if (recipe.AuthorId != userId)
+                throw new UnauthorizedAccessException("You are not authorized to delete this recipe");
 
             recipe.DeleteDate = DateTime.UtcNow;
             _dbContext.SaveChanges();

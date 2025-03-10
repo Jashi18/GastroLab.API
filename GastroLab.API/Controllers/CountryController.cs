@@ -1,11 +1,13 @@
 ﻿using GastroLab.Application.Interfaces;
 using GastroLab.Models.CountryModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GastroLab.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CountryController : ControllerBase
     {
         private readonly ICountryService _countryService;

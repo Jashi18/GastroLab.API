@@ -1,11 +1,14 @@
 ﻿using GastroLab.Application.Interfaces;
 using GastroLab.Models.RecipeModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GastroLab.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _recipeService;
@@ -62,7 +65,11 @@ namespace GastroLab.API.Controllers
         {
             try
             {
-                var recipeId = _recipeService.CreateRecipe(model);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("User not authenticated properly");
+
+                var recipeId = _recipeService.CreateRecipe(model, userId);
                 return CreatedAtAction(nameof(GetById), new { id = recipeId }, recipeId);
             }
             catch (KeyNotFoundException ex)
@@ -76,7 +83,11 @@ namespace GastroLab.API.Controllers
         {
             try
             {
-                var recipeId = _recipeService.UpdateRecipe(model);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("User not authenticated properly");
+
+                var recipeId = _recipeService.UpdateRecipe(model, userId);
                 return Ok(recipeId);
             }
             catch (KeyNotFoundException ex)
@@ -88,7 +99,11 @@ namespace GastroLab.API.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var result = _recipeService.DeleteRecipe(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User not authenticated properly");
+
+            var result = _recipeService.DeleteRecipe(id, userId);
             return Ok(result);
         }
     }
