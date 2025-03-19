@@ -10,7 +10,6 @@
         public int CountryId { get; set; }
         public Country? Country { get; set; }
 
-        public int NutritionalInfoId { get; set; }
         public NutritionalInfo? NutritionalInfo { get; set; }
 
         public virtual ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();

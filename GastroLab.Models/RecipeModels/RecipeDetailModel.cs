@@ -16,8 +16,7 @@ namespace GastroLab.Models.RecipeModels
         public double AverageRating { get; set; }
         public int RatingsCount { get; set; }
         public List<IngredientModel> Ingredients { get; set; } = new List<IngredientModel>();
-
-        public List<DietaryTagCreateModel> DietaryTags = new List<DietaryTagCreateModel>();
+        public List<DietaryTagCreateModel> DietaryTags { get; set; } = new List<DietaryTagCreateModel>();
         public List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
         public NutritionalInfoModel? NutritionalInfo { get; set; }
     }

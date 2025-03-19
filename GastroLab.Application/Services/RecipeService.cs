@@ -118,6 +118,7 @@ namespace GastroLab.Application.Services
                 .Include(r => r.Categories.Where(c => c.DeleteDate == null))
                 .Include(r => r.Ratings)
                 .Include(r => r.NutritionalInfo)
+                .Include(r => r.DietaryTags)
                 .Select(r => new RecipeDetailModel
                 {
                     Id = r.Id,
