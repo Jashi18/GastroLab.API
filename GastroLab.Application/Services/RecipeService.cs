@@ -1,6 +1,8 @@
 ﻿using GastroLab.Application.Interfaces;
 using GastroLab.Data.Data;
 using GastroLab.Data.Entities;
+using GastroLab.Models.DietaryTagModels;
+using GastroLab.Models.NutritionalInfoModels;
 using GastroLab.Models.RecipeModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +28,16 @@ namespace GastroLab.Application.Services
                     CountryName = r.Country != null ? r.Country.Name : string.Empty,
                     ImageUrl = r.ImageUrl,
                     AuthorId = r.AuthorId,
-                    Categories = r.Categories.Where(c => c.DeleteDate == null).Select(c => c.Name).ToList()
+                    Categories = r.Categories.Where(c => c.DeleteDate == null).Select(c => c.Name).ToList(),
+                    AverageRating = r.Ratings.Any() ? Math.Round(r.Ratings.Average(r => r.Value)) : 0,
+                    NutritionalInfo = new NutritionalInfoModel
+                    {
+                        Calories = r.NutritionalInfo.Calories,
+                        Protein = r.NutritionalInfo.Protein,
+                        Carbs = r.NutritionalInfo.Carbs,
+                        Fat = r.NutritionalInfo.Fat,
+                        ServingSize = r.NutritionalInfo.ServingSize,
+                    }
                 })
                 .ToList();
 
@@ -106,6 +117,7 @@ namespace GastroLab.Application.Services
                 .Include(r => r.Ingredients.Where(i => i.DeleteDate == null))
                 .Include(r => r.Categories.Where(c => c.DeleteDate == null))
                 .Include(r => r.Ratings)
+                .Include(r => r.NutritionalInfo)
                 .Select(r => new RecipeDetailModel
                 {
                     Id = r.Id,
@@ -131,6 +143,22 @@ namespace GastroLab.Application.Services
                             Id = c.Id,
                             Name = c.Name
                         }).ToList(),
+                    NutritionalInfo = r.NutritionalInfo != null ? new NutritionalInfoModel
+                    {
+                        Id = r.NutritionalInfo.Id,
+                        Calories = r.NutritionalInfo.Calories,
+                        Protein = r.NutritionalInfo.Protein,
+                        Carbs = r.NutritionalInfo.Carbs,
+                        Fat = r.NutritionalInfo.Fat,
+                        ServingSize = r.NutritionalInfo.ServingSize
+                    } : null,
+                    DietaryTags = r.DietaryTags
+                        .Where(dt => dt.DeleteDate == null)
+                        .Select(dt => new DietaryTagCreateModel
+                        {
+                            Id = dt.Id,
+                            Name = dt.Name
+                        }).ToList(),
                     AverageRating = r.Ratings.Any() ? Math.Round(r.Ratings.Average(r => r.Value)) : 0,
                     RatingsCount = r.Ratings.Count
                 })
@@ -150,6 +178,10 @@ namespace GastroLab.Application.Services
                 .Where(c => c.DeleteDate == null && recipeModel.CategoryIds.Contains(c.Id))
                 .ToList();
 
+            var dietaryTags = _dbContext.DietaryTags
+                .Where(dt => dt.DeleteDate == null && recipeModel.DietaryTagIds.Contains(dt.Id))
+                .ToList();
+
             if (categories.Count != recipeModel.CategoryIds.Count)
                 throw new KeyNotFoundException("One or more categories not found");
 
@@ -164,6 +196,19 @@ namespace GastroLab.Application.Services
                 CreateDate = DateTime.UtcNow
             };
 
+            if (recipeModel.NutritionalInfo != null)
+            {
+                recipe.NutritionalInfo = new NutritionalInfo
+                {
+                    Calories = recipeModel.NutritionalInfo.Calories,
+                    Protein = recipeModel.NutritionalInfo.Protein,
+                    Carbs = recipeModel.NutritionalInfo.Carbs,
+                    Fat = recipeModel.NutritionalInfo.Fat,
+                    ServingSize = recipeModel.NutritionalInfo.ServingSize,
+                    CreateDate = DateTime.UtcNow
+                };
+            }
+
             foreach (var ingredientModel in recipeModel.Ingredients)
             {
                 recipe.Ingredients.Add(new Ingredient
@@ -172,6 +217,11 @@ namespace GastroLab.Application.Services
                     Amount = ingredientModel.Amount,
                     CreateDate = DateTime.UtcNow
                 });
+            }
+
+            foreach (var dietaryTag in dietaryTags)
+            {
+                recipe.DietaryTags.Add(dietaryTag);
             }
 
             foreach (var category in categories)
@@ -216,6 +266,31 @@ namespace GastroLab.Application.Services
             recipe.CountryId = recipeModel.CountryId;
             recipe.ImageUrl = recipeModel.ImageUrl;
             recipe.UpdateDate = DateTime.UtcNow;
+
+            if (recipeModel.NutritionalInfo != null)
+            {
+                if (recipe.NutritionalInfo == null)
+                {
+                    recipe.NutritionalInfo = new NutritionalInfo
+                    {
+                        Calories = recipeModel.NutritionalInfo.Calories,
+                        Protein = recipeModel.NutritionalInfo.Protein,
+                        Carbs = recipeModel.NutritionalInfo.Carbs,
+                        Fat = recipeModel.NutritionalInfo.Fat,
+                        ServingSize = recipeModel.NutritionalInfo.ServingSize,
+                        CreateDate = DateTime.UtcNow
+                    };
+                }
+                else
+                {
+                    recipe.NutritionalInfo.Calories = recipeModel.NutritionalInfo.Calories;
+                    recipe.NutritionalInfo.Protein = recipeModel.NutritionalInfo.Protein;
+                    recipe.NutritionalInfo.Carbs = recipeModel.NutritionalInfo.Carbs;
+                    recipe.NutritionalInfo.Fat = recipeModel.NutritionalInfo.Fat;
+                    recipe.NutritionalInfo.ServingSize = recipeModel.NutritionalInfo.ServingSize;
+                    recipe.NutritionalInfo.UpdateDate = DateTime.UtcNow;
+                }
+            }
 
             var existingIngredientIds = recipe.Ingredients
                 .Where(i => i.DeleteDate == null)

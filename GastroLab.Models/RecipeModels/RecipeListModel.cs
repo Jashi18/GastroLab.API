@@ -1,4 +1,6 @@
-﻿namespace GastroLab.Models.RecipeModels
+﻿using GastroLab.Models.NutritionalInfoModels;
+
+namespace GastroLab.Models.RecipeModels
 {
     public class RecipeListModel
     {
@@ -13,5 +15,6 @@
         public List<string> Categories { get; set; } = new List<string>();
         public double AverageRating { get; set; }
         public int RatingCount { get; set; }
+        public NutritionalInfoModel? NutritionalInfo { get; set; }
     }
 }

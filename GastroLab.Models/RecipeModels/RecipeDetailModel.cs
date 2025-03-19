@@ -1,4 +1,7 @@
-﻿namespace GastroLab.Models.RecipeModels
+﻿using GastroLab.Models.DietaryTagModels;
+using GastroLab.Models.NutritionalInfoModels;
+
+namespace GastroLab.Models.RecipeModels
 {
     public class RecipeDetailModel
     {
@@ -13,7 +16,10 @@
         public double AverageRating { get; set; }
         public int RatingsCount { get; set; }
         public List<IngredientModel> Ingredients { get; set; } = new List<IngredientModel>();
+
+        public List<DietaryTagCreateModel> DietaryTags = new List<DietaryTagCreateModel>();
         public List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
+        public NutritionalInfoModel? NutritionalInfo { get; set; }
     }
     public class IngredientModel
     {

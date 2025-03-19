@@ -14,5 +14,7 @@ namespace GastroLab.Data.Data
         public DbSet<Country> Countries { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<NutritionalInfo> NutritionalInfos { get; set; }
+        public DbSet<DietaryTag> DietaryTags { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace GastroLab.Models.RecipeModels
+﻿using GastroLab.Models.NutritionalInfoModels;
+
+namespace GastroLab.Models.RecipeModels
 {
     public class RecipeUpdateModel
     {
@@ -10,6 +12,7 @@
         public string ImageUrl { get; set; } = string.Empty;
         public List<IngredientUpdateModel> Ingredients { get; set; } = new List<IngredientUpdateModel>();
         public List<int> CategoryIds { get; set; } = new List<int>();
+        public NutritionalInfoModel? NutritionalInfo { get; set; }
     }
 
     public class IngredientUpdateModel
