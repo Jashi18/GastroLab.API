@@ -15,9 +15,7 @@ namespace GastroLab.API.Controllers
         {
             _authService = authService;
         }
-
         [HttpPost("register")]
-        [Authorize]
         public async Task<IActionResult> Register([FromBody] RegistrationModel model)
         {
             try
@@ -30,7 +28,6 @@ namespace GastroLab.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {

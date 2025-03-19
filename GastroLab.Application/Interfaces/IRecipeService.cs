@@ -12,5 +12,7 @@ namespace GastroLab.Application.Interfaces
         int CreateRecipe(RecipeCreateModel recipeModel, string userId);
         int UpdateRecipe(RecipeUpdateModel recipeModel, string userId);
         bool DeleteRecipe(int id, string userId);
+        Task<IEnumerable<RecipeListModel>> GetMostRatedRecipesAsync(int count = 10);
+        Task<IEnumerable<RecipeListModel>> GetHighestRatedRecipesAsync(int count = 10, double minRating = 4.0);
     }
 }

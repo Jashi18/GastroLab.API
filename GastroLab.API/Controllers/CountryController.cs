@@ -15,7 +15,6 @@ namespace GastroLab.API.Controllers
         {
             _countryService = countryService;
         }
-
         [HttpGet]
         public IActionResult GetAll()
         {

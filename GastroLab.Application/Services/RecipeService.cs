@@ -105,6 +105,7 @@ namespace GastroLab.Application.Services
                 .Include(r => r.Country)
                 .Include(r => r.Ingredients.Where(i => i.DeleteDate == null))
                 .Include(r => r.Categories.Where(c => c.DeleteDate == null))
+                .Include(r => r.Ratings)
                 .Select(r => new RecipeDetailModel
                 {
                     Id = r.Id,
@@ -129,7 +130,9 @@ namespace GastroLab.Application.Services
                         {
                             Id = c.Id,
                             Name = c.Name
-                        }).ToList()
+                        }).ToList(),
+                    AverageRating = r.Ratings.Any() ? Math.Round(r.Ratings.Average(r => r.Value)) : 0,
+                    RatingsCount = r.Ratings.Count
                 })
                 .FirstOrDefault();
 
@@ -279,6 +282,67 @@ namespace GastroLab.Application.Services
             _dbContext.SaveChanges();
 
             return true;
+        }
+        public async Task<IEnumerable<RecipeListModel>> GetMostRatedRecipesAsync(int count = 10)
+        {
+            var recipes = await _dbContext.Recipes
+                .Where(r => r.DeleteDate == null)
+                .Include(r => r.Country)
+                .Include(r => r.Categories)
+                .Include(r => r.Ratings)
+                .OrderByDescending(r => r.Ratings.Count)
+                .Take(count)
+                .Select(r => new RecipeListModel
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    CookingTime = r.CookingTime,
+                    CountryId = r.CountryId,
+                    CountryName = r.Country != null ? r.Country.Name : string.Empty,
+                    ImageUrl = r.ImageUrl,
+                    AuthorId = r.AuthorId,
+                    Categories = r.Categories.Where(c => c.DeleteDate == null).Select(c => c.Name).ToList(),
+                    AverageRating = r.Ratings.Any() ? Math.Round(r.Ratings.Average(rating => rating.Value), 1) : 0,
+                    RatingCount = r.Ratings.Count
+                })
+                .ToListAsync();
+
+            return recipes;
+        }
+        public async Task<IEnumerable<RecipeListModel>> GetHighestRatedRecipesAsync(int count = 10, double minRating = 4.0)
+        {
+            var recipes = await _dbContext.Recipes
+                .Where(r => r.DeleteDate == null)
+                .Include(r => r.Country)
+                .Include(r => r.Categories)
+                .Include(r => r.Ratings)
+                .Where(r => r.Ratings.Count >= 3)
+                .Select(r => new
+                {
+                    Recipe = r,
+                    AverageRating = r.Ratings.Any() ? r.Ratings.Average(rating => rating.Value) : 0
+                })
+                .Where(r => r.AverageRating >= minRating)
+                .OrderByDescending(r => r.AverageRating)
+                .Take(count)
+                .Select(r => new RecipeListModel
+                {
+                    Id = r.Recipe.Id,
+                    Name = r.Recipe.Name,
+                    Description = r.Recipe.Description,
+                    CookingTime = r.Recipe.CookingTime,
+                    CountryId = r.Recipe.CountryId,
+                    CountryName = r.Recipe.Country != null ? r.Recipe.Country.Name : string.Empty,
+                    ImageUrl = r.Recipe.ImageUrl,
+                    AuthorId = r.Recipe.AuthorId,
+                    Categories = r.Recipe.Categories.Where(c => c.DeleteDate == null).Select(c => c.Name).ToList(),
+                    AverageRating = Math.Round(r.AverageRating, 1),
+                    RatingCount = r.Recipe.Ratings.Count
+                })
+                .ToListAsync();
+
+            return recipes;
         }
     }
 }

@@ -17,14 +17,12 @@ namespace GastroLab.API.Controllers
         {
             _recipeService = recipeService;
         }
-
         [HttpGet]
         public IActionResult GetAll()
         {
             var recipes = _recipeService.GetAllRecipes();
             return Ok(recipes);
         }
-
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -38,28 +36,24 @@ namespace GastroLab.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpGet("bycategory/{categoryId}")]
         public IActionResult GetByCategory(int categoryId)
         {
             var recipes = _recipeService.GetRecipesByCategory(categoryId);
             return Ok(recipes);
         }
-
         [HttpGet("bycountry/{countryId}")]
         public IActionResult GetByCountry(int countryId)
         {
             var recipes = _recipeService.GetRecipesByCountry(countryId);
             return Ok(recipes);
         }
-
         [HttpGet("byauthor/{authorId}")]
         public IActionResult GetByAuthor(string authorId)
         {
             var recipes = _recipeService.GetRecipesByAuthor(authorId);
             return Ok(recipes);
         }
-
         [HttpPost]
         public IActionResult Create([FromBody] RecipeCreateModel model)
         {
@@ -77,7 +71,6 @@ namespace GastroLab.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpPut("{id}")]
         public IActionResult Update([FromBody] RecipeUpdateModel model)
         {
@@ -95,7 +88,6 @@ namespace GastroLab.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

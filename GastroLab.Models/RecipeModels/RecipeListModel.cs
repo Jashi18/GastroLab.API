@@ -11,5 +11,7 @@
         public string ImageUrl { get; set; } = string.Empty;
         public string AuthorId { get; set; } = string.Empty;
         public List<string> Categories { get; set; } = new List<string>();
+        public double AverageRating { get; set; }
+        public int RatingCount { get; set; }
     }
 }

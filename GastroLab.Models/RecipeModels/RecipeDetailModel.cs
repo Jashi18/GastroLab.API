@@ -10,6 +10,8 @@
         public string CountryName { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string AuthorId { get; set; } = string.Empty;
+        public double AverageRating { get; set; }
+        public int RatingsCount { get; set; }
         public List<IngredientModel> Ingredients { get; set; } = new List<IngredientModel>();
         public List<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
     }
