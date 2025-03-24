@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GastroLab.Data.Migrations
 {
     [DbContext(typeof(GastroLabDbContext))]
-    [Migration("20250319122737_removeNutritionId")]
-    partial class removeNutritionId
+    [Migration("20250319172755_updateDatabase")]
+    partial class updateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -71,7 +71,6 @@ namespace GastroLab.Application.Services
                 Token = GenerateJwtToken(user)
             };
         }
-
         private string GenerateJwtToken(ApplicationUser user)
         {
             var jwtKey = _configuration["Jwt:Key"] ??
